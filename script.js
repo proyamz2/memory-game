@@ -127,6 +127,13 @@ $(function(){
                   }
 
                   startScreen('nice');
+                  sendGameDataToQualtrics({
+  flip_matched: parseInt(get('flip_matched')),
+  flip_wrong: parseInt(get('flip_wrong')),
+  flip_won: 1,
+  flip_lost: 0,
+  flip_abandoned: 0
+});
                 }
               }
               else {
@@ -145,6 +152,13 @@ $(function(){
         })
         .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
           startScreen('fail');
+          sendGameDataToQualtrics({
+  flip_matched: parseInt(get('flip_matched')),
+  flip_wrong: parseInt(get('flip_wrong')),
+  flip_won: 0,
+  flip_lost: 1,
+  flip_abandoned: 0
+});
         });
 
       $(window).off().on('keyup', function(e){
@@ -173,3 +187,9 @@ $(function(){
   });
 
 });
+function sendGameDataToQualtrics(data) {
+    window.parent.postMessage({
+        type: "flip_game_data",
+        data: data
+    }, "*");
+}
