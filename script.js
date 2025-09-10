@@ -80,6 +80,9 @@ $(function(){
 
   $(document).ready(function(){
     $('.logo, .info').hide();
+      // Reset per-round counters so Qualtrics captures THIS round only
+  set('flip_matched', 0);
+  set('flip_wrong', 0);
     increase('flip_abandoned');
 
     var difficulty = 'medium',
