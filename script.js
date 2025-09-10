@@ -83,7 +83,7 @@ $(function(){
     increase('flip_abandoned');
 
     var difficulty = 'medium',
-        timer      = 1000 * 18 * 5,
+        timer      = 90000,
         level      = 18;
 
     $('#g').addClass(difficulty);
