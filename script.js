@@ -135,7 +135,9 @@ $(function(){
   flip_wrong: parseInt(get('flip_wrong')),
   flip_won: 1,
   flip_lost: 0,
-  flip_abandoned: 0
+  flip_abandoned: 0, 
+  elapsed_ms: time,
+  result: "win"
 });
                 }
               }
@@ -148,21 +150,22 @@ $(function(){
         }
       });
 
-      $('<i class="timer"></i>')
-        .prependTo('#g')
-        .css({
-          'animation' : 'timer '+timer+'ms linear'
-        })
-        .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
-          startScreen('fail');
-          sendGameDataToQualtrics({
-  flip_matched: parseInt(get('flip_matched')),
-  flip_wrong: parseInt(get('flip_wrong')),
-  flip_won: 0,
-  flip_lost: 1,
-  flip_abandoned: 0
-});
-        });
+     $('<i class="timer"></i>')
+  .prependTo('#g')
+  .css({ 'animation' : 'timer '+timer+'ms linear' })
+  .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+    var time = $.now() - startGame;     // <-- add this
+    startScreen('fail');
+    sendGameDataToQualtrics({
+      flip_matched: parseInt(get('flip_matched')),
+      flip_wrong: parseInt(get('flip_wrong')),
+      flip_won: 0,
+      flip_lost: 1,
+      flip_abandoned: 0,
+      elapsed_ms: time,                 // <-- add this
+      result: "timeout"                 // <-- add this
+    });
+  });
 
       $(window).off().on('keyup', function(e){
         if(e.keyCode == 80){
@@ -190,9 +193,14 @@ $(function(){
   });
 
 });
+var postedOnce = false;   // <-- add this above the function
+
 function sendGameDataToQualtrics(data) {
-    window.parent.postMessage({
-        type: "flip_game_data",
-        data: data
-    }, "*");
+  if (postedOnce) return;       // <-- guard
+  postedOnce = true;            // <-- flip the flag
+
+  window.parent.postMessage({
+    type: "flip_game_data",
+    data: data
+  }, "*");
 }
