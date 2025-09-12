@@ -193,21 +193,15 @@ $(function(){
   });
 
 });
-var postedOnce = false;   // keep this line
+var postedOnce = false;   // <-- add this above the function
 
 function sendGameDataToQualtrics(data) {
-  if (postedOnce) return;
-  postedOnce = true;
+  if (postedOnce) return;       // <-- guard
+  postedOnce = true;            // <-- flip the flag
 
-  // 1) Detailed payload (Qualtrics records stats)
   window.parent.postMessage({
     type: "flip_game_data",
     data: data
-  }, "*");
-
-  // 2) “Done / time’s up” signal (Qualtrics advances immediately)
-  window.parent.postMessage({
-    type: "flip_timeup"
   }, "*");
 }
 
